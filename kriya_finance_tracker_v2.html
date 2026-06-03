@@ -1,0 +1,595 @@
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<h2 class="sr-only">Kriya Event Finance Tracker v2 — 7 screens including new Internal Expenses module and updated Reports with real vendor names</h2>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--kr:#BE1E2D;--krd:#8B1420;--krl:#F5E6E8;
+--kg:#0F6E56;--kgl:#E1F5EE;
+--ka:#BA7517;--kal:#FAEEDA;
+--kp:#4A90D9;--kpl:#E6F1FB;
+--kpu:#534AB7;--kpul:#EEEDFE;
+--kc:#1A1A2E;--ks:#4A4A6A;
+--km:#F8F7F5;--kb:#E8E4E0;
+--kgold:#C9A84C;--kgoldl:#FAF3E0;
+--sh:0 1px 3px rgba(26,26,46,.08);
+--shm:0 4px 16px rgba(26,26,46,.1);
+}
+body{font-family:'DM Sans',sans-serif;background:#EDEBE8;color:var(--kc)}
+.snav{display:flex;gap:5px;padding:14px 18px 0;flex-wrap:wrap}
+.sbtn{padding:7px 13px;border:1.5px solid var(--kb);background:#fff;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;color:var(--ks);transition:all .15s}
+.sbtn.active{background:var(--kr);color:#fff;border-color:var(--kr)}
+.sbtn:hover:not(.active){border-color:var(--kr);color:var(--kr)}
+.sw{padding:14px 18px 22px;display:none}
+.sw.active{display:block}
+.bc{background:#F0EEF0;border-radius:12px 12px 0 0;padding:9px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #D8D4D8}
+.bd{display:flex;gap:5px}.bdot{width:9px;height:9px;border-radius:50%}
+.bdot.r{background:#FF5F57}.bdot.y{background:#FEBC2E}.bdot.g{background:#28C840}
+.burl{background:#fff;border-radius:6px;padding:3px 11px;font-size:10px;color:#888;flex:1;font-family:monospace}
+.af{background:#fff;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:var(--shm);min-height:640px}
+.ml{display:grid;grid-template-columns:210px 1fr;min-height:640px}
+.sb{background:var(--kc);display:flex;flex-direction:column}
+.sblogo{padding:18px 18px 16px;display:flex;align-items:center;gap:9px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sblm{width:30px;height:30px;background:var(--kr);border-radius:7px;display:flex;align-items:center;justify-content:center}
+.sblt{font-family:'Playfair Display',serif;font-size:15px;color:#fff;font-weight:600}
+.sbsub{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.5px;padding:5px 18px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.nsl{font-size:10px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;padding:10px 18px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.55);font-size:12px;margin:0 6px 1px;transition:all .12s}
+.ni.active{background:var(--kr);color:#fff}
+.ni:hover:not(.active){background:rgba(255,255,255,.07);color:#fff}
+.nic{font-size:14px;flex-shrink:0}
+.nbadge{margin-left:auto;background:var(--kr);color:#fff;font-size:9px;padding:2px 6px;border-radius:9px;font-weight:700}
+.nbadge.orange{background:var(--ka)}
+.sbft{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,.08)}
+.ua{display:flex;align-items:center;gap:9px}
+.uav{width:32px;height:32px;border-radius:50%;background:var(--kr);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.mc{background:var(--km);overflow:hidden}
+.tb{background:#fff;padding:0 22px;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--kb)}
+.tbt{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--kc)}
+.cb{padding:18px 22px;overflow-y:auto}
+.kg4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kg3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kg2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+.kc2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-bottom:14px}
+.kcard{background:#fff;border-radius:11px;padding:14px;border:1px solid var(--kb)}
+.kcard.acc{background:var(--kr);border-color:var(--kr)}
+.kcard.acc2{background:var(--kc);border-color:var(--kc)}
+.kcard.warn{background:var(--kal);border-color:#F0C070}
+.klbl{font-size:10px;font-weight:600;color:var(--ks);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.kcard.acc .klbl,.kcard.acc2 .klbl{color:rgba(255,255,255,.65)}
+.kcard.warn .klbl{color:var(--ka)}
+.kval{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--kc);line-height:1.1}
+.kcard.acc .kval,.kcard.acc2 .kval{color:#fff}
+.kcard.warn .kval{color:var(--ka)}
+.ktrend{display:flex;align-items:center;gap:4px;margin-top:5px;font-size:10px}
+.tu{color:var(--kg)}.td{color:var(--kr)}
+.kico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;margin-bottom:7px}
+.rl{background:var(--krl);color:var(--kr)}
+.gl{background:var(--kgl);color:var(--kg)}
+.al{background:var(--kal);color:var(--ka)}
+.pl{background:var(--kpl);color:var(--kp)}
+.pul{background:var(--kpul);color:var(--kpu)}
+.gl2{background:var(--kgoldl);color:var(--kgold)}
+.cc{background:#fff;border-radius:11px;padding:16px;border:1px solid var(--kb)}
+.ctit{font-size:12px;font-weight:600;color:var(--kc);margin-bottom:3px}
+.csub{font-size:10px;color:var(--ks);margin-bottom:12px}
+.tcard{background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden}
+.th2{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--kb)}
+.ttl{font-size:12px;font-weight:600;color:var(--kc)}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead th{font-size:10px;font-weight:600;color:var(--ks);text-transform:uppercase;letter-spacing:.4px;padding:9px 14px;background:var(--km);text-align:left;border-bottom:1px solid var(--kb)}
+tbody td{padding:9px 14px;font-size:12px;color:var(--kc);border-bottom:1px solid var(--kb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--km)}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.bg{background:var(--kgl);color:var(--kg)}
+.ba{background:var(--kal);color:var(--ka)}
+.br{background:var(--krl);color:var(--krd)}
+.bb{background:var(--kpl);color:var(--kp)}
+.bp{background:var(--kpul);color:var(--kpu)}
+.al2{color:var(--kr);font-size:11px;font-weight:600;cursor:pointer;margin-right:8px}
+.btn-r{background:var(--kr);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-o{background:transparent;color:var(--kr);border:1.5px solid var(--kr);border-radius:7px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer}
+.btn-g{background:transparent;color:var(--ks);border:1.5px solid var(--kb);border-radius:7px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer}
+.pbar{background:#F0EDE8;border-radius:4px;height:5px}
+.pfill{background:var(--kr);border-radius:4px;height:5px}
+.divider{border:none;border-top:1px solid var(--kb);margin:14px 0}
+.stag{background:rgba(255,255,255,.13);color:#fff;padding:2px 9px;border-radius:6px;font-size:10px}
+.fi{display:flex;gap:8px}
+.fsel{padding:6px 10px;border:1.5px solid var(--kb);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ks);background:#fff;cursor:pointer}
+.inp{width:100%;padding:10px 13px;border:1.5px solid var(--kb);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--kc);outline:none;background:var(--km)}
+.flbl{font-size:10px;font-weight:700;color:var(--ks);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:block}
+.fgrp{margin-bottom:14px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sec-ttl{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--kc)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}
+.chip-r{background:var(--krl);color:var(--krd)}
+.chip-g{background:var(--kgl);color:var(--kg)}
+.chip-a{background:var(--kal);color:var(--ka)}
+.chip-p{background:var(--kpul);color:var(--kpu)}
+.exp-cat-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--kb)}
+.exp-cat-row:last-child{border-bottom:none}
+.exp-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.vstrike{color:#AAA;text-decoration:line-through;font-size:11px}
+.sum-banner{background:var(--kr);border-radius:11px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.sum-item{text-align:center}
+.sum-lbl{font-size:10px;color:rgba(255,255,255,.65);margin-bottom:3px}
+.sum-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#fff}
+.sum-sep{width:1px;background:rgba(255,255,255,.2);align-self:stretch}
+.warn-banner{background:#FFF8E6;border:1px solid #F0C070;border-radius:9px;padding:10px 14px;font-size:11px;color:var(--ka);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.tl{list-style:none}
+.tli{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--kb)}
+.tli:last-child{border-bottom:none}
+.tld{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.tld.recv{background:var(--kg)}.tld.pend{background:var(--ka)}.tld.over{background:var(--kr)}
+</style>
+
+<div class="snav">
+  <button class="sbtn active" onclick="ss('login',this)">① Login</button>
+  <button class="sbtn" onclick="ss('dash',this)">② Dashboard</button>
+  <button class="sbtn" onclick="ss('proj',this)">③ Projects</button>
+  <button class="sbtn" onclick="ss('create',this)">④ Create Project</button>
+  <button class="sbtn" onclick="ss('pd',this)">⑤ Project Detail</button>
+  <button class="sbtn" onclick="ss('exp',this)">⑥ Internal Expenses ✦ New</button>
+  <button class="sbtn" onclick="ss('rep',this)">⑦ Reports</button>
+</div>
+
+<!-- ① LOGIN -->
+<div class="sw active" id="sw-login">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/login</div></div>
+<div class="af" style="display:grid;grid-template-columns:1fr 1fr;min-height:600px">
+  <div style="background:var(--kr);padding:52px 44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-70px;right:-70px;width:260px;height:260px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1)"></div>
+    <div style="position:absolute;bottom:-50px;left:-50px;width:200px;height:200px;border-radius:50%;border:1.5px solid rgba(255,255,255,.07)"></div>
+    <div style="position:relative;z-index:1">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:40px">
+        <div style="width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:9px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L10 6H15L11 9L13 14L8 11L3 14L5 9L1 6H6L8 1Z" fill="white" opacity=".9"/></svg></div>
+        <span style="font-family:'Playfair Display',serif;font-size:18px;color:#fff;font-weight:600">Kriya Events</span>
+      </div>
+      <div style="font-family:'Playfair Display',serif;font-size:28px;color:#fff;font-weight:600;line-height:1.3;margin-bottom:12px">Transforming<br>Moments into<br>Memories</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;max-width:260px">Premium event finance management for Mysore's finest event planning team.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1">
+      <div style="background:rgba(255,255,255,.12);border-radius:9px;padding:14px;border:1px solid rgba(255,255,255,.13)"><div style="font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:600">42</div><div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:2px">Active Projects</div></div>
+      <div style="background:rgba(255,255,255,.12);border-radius:9px;padding:14px;border:1px solid rgba(255,255,255,.13)"><div style="font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:600">₹1.24Cr</div><div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:2px">Total Revenue</div></div>
+      <div style="background:rgba(255,255,255,.12);border-radius:9px;padding:14px;border:1px solid rgba(255,255,255,.13)"><div style="font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:600">19.8%</div><div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:2px">Net Margin (after OH)</div></div>
+      <div style="background:rgba(255,255,255,.12);border-radius:9px;padding:14px;border:1px solid rgba(255,255,255,.13)"><div style="font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:600">₹24.6L</div><div style="font-size:10px;color:rgba(255,255,255,.65);margin-top:2px">Net Profit (after OH)</div></div>
+    </div>
+  </div>
+  <div style="padding:52px 44px;display:flex;flex-direction:column;justify-content:center;background:#fff">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:24px"><div style="width:26px;height:26px;background:var(--kr);border-radius:6px;display:flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L8 5H13L9.5 7.5L11 12L6.5 9L2 12L3.5 7.5L0 5H5L6.5 1Z" fill="white"/></svg></div><span style="font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--kc)">Finance Portal</span></div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--kc);margin-bottom:4px">Welcome back</div>
+    <div style="font-size:12px;color:var(--ks);margin-bottom:28px">Sign in to your finance dashboard</div>
+    <div class="fgrp"><label class="flbl">Email Address</label><input class="inp" type="email" value="finance@eventswithkriya.com" readonly></div>
+    <div class="fgrp"><label class="flbl">Password</label><input class="inp" type="password" value="••••••••••" readonly><div style="text-align:right;font-size:11px;color:var(--kr);margin-top:5px;cursor:pointer">Forgot password?</div></div>
+    <button style="width:100%;padding:12px;background:var(--kr);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px">Sign In to Dashboard</button>
+    <div style="text-align:center;font-size:11px;color:#AAA">Protected by enterprise-grade encryption</div>
+  </div>
+</div>
+</div>
+
+<!-- ② DASHBOARD -->
+<div class="sw" id="sw-dash">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/dashboard</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div>
+    <div class="ni active"><span class="nic">⬡</span> Dashboard</div>
+    <div class="ni"><span class="nic">📁</span> Projects <span class="nbadge">42</span></div>
+    <div class="ni"><span class="nic">₹</span> Finance</div>
+    <div class="ni"><span class="nic">🏪</span> Vendors</div>
+    <div class="nsl">Operations</div>
+    <div class="ni"><span class="nic">🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div>
+    <div class="ni"><span class="nic">📊</span> Reports</div>
+    <div class="ni"><span class="nic">⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div class="tb"><div><div class="tbt">Dashboard</div><div style="font-size:10px;color:var(--ks)">FY 2024–25 · Includes internal overheads</div></div><div style="display:flex;gap:8px;align-items:center"><div style="display:flex;align-items:center;gap:7px;background:var(--km);border:1.5px solid var(--kb);border-radius:7px;padding:6px 11px;font-size:12px;color:#AAA"><span>🔍</span><span>Search projects…</span></div><div style="display:flex;align-items:center;gap:6px;background:var(--krl);padding:4px 9px;border-radius:7px;cursor:pointer"><div style="width:24px;height:24px;border-radius:50%;background:var(--kr);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">KR</div><span style="font-size:11px;font-weight:600;color:var(--krd)">Kriya</span></div></div></div>
+    <div class="cb">
+      <div class="warn-banner"><span style="font-size:16px">⚠</span> Internal overheads of <strong>₹3,20,000</strong> are now factored into all profit & margin figures below.</div>
+      <div class="kg4">
+        <div class="kcard"><div class="kico rl">📁</div><div class="klbl">Total Projects</div><div class="kval" style="font-size:24px">42</div><div class="ktrend"><span class="tu">↑ 8</span><span style="color:#AAA;font-size:9px">vs last qtr</span></div></div>
+        <div class="kcard"><div class="kico gl">₹</div><div class="klbl">Total Revenue</div><div class="kval">₹1,24,50,000</div><div class="ktrend"><span class="tu">↑ 18.4%</span></div></div>
+        <div class="kcard"><div class="kico al">🏪</div><div class="klbl">Vendor Payments</div><div class="kval">₹82,75,000</div><div class="ktrend"><span class="tu">↑ 12.1%</span></div></div>
+        <div class="kcard warn"><div class="klbl">Internal Overheads</div><div class="kval">₹3,20,000</div><div class="ktrend"><span style="color:var(--ka);font-size:9px">Rent + Transport + IT</span></div></div>
+      </div>
+      <div class="kg3" style="margin-top:-2px">
+        <div class="kcard"><div class="klbl">Outstanding Receivables</div><div class="kval">₹18,25,000</div><div class="ktrend"><span class="td">↓ Needs attention</span></div></div>
+        <div class="kcard acc"><div class="klbl">Net Profit (after OH)</div><div class="kval">₹24,60,000</div><div class="ktrend" style="margin-top:4px"><span style="color:rgba(255,255,255,.8);font-size:10px">Was ₹27.8L before OH</span></div></div>
+        <div class="kcard acc2"><div class="klbl">Net Margin (after OH)</div><div class="kval" style="font-size:24px">19.8%</div><div class="ktrend" style="margin-top:4px"><span style="color:rgba(255,255,255,.7);font-size:10px">Gross: 22.3% | OH impact: -2.5pp</span></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1.2fr;gap:12px;margin-bottom:14px">
+        <div class="cc">
+          <div class="ctit">Revenue vs Expenses (incl. overheads)</div>
+          <div class="csub">Monthly trend — Jan to May 2025</div>
+          <div style="height:150px"><canvas id="dc-line"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="ctit">Payment Status</div>
+          <div class="csub">Portfolio overview</div>
+          <div style="height:120px;display:flex;justify-content:center"><canvas id="dc-donut" width="120" height="120"></canvas></div>
+          <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--kr);border-radius:50%;display:inline-block"></span>Received</span><span style="font-weight:600">65%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--ka);border-radius:50%;display:inline-block"></span>Pending</span><span style="font-weight:600">25%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:#B4B2A9;border-radius:50%;display:inline-block"></span>Overdue</span><span style="font-weight:600">10%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="th2"><div class="ttl">Recent Projects</div><button class="btn-o" style="font-size:10px;padding:5px 10px">View All →</button></div>
+        <table>
+          <thead><tr><th style="width:22%">Project</th><th style="width:18%">Client</th><th style="width:12%">Budget</th><th style="width:11%">Revenue</th><th style="width:11%">Expense</th><th style="width:10%">Profit</th><th style="width:9%">Status</th><th style="width:7%">Act.</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600">Royal Wedding 2025</td><td>Sharma Family</td><td>₹25L</td><td>₹25L</td><td>₹19L</td><td style="font-weight:700;color:var(--kg)">₹6L</td><td><span class="badge bg">Active</span></td><td><a class="al2">View</a></td></tr>
+            <tr><td style="font-weight:600">Tech Summit 2025</td><td>Infosys</td><td>₹40L</td><td>₹40L</td><td>₹28L</td><td style="font-weight:700;color:var(--kg)">₹12L</td><td><span class="badge bb">Done</span></td><td><a class="al2">View</a></td></tr>
+            <tr><td style="font-weight:600">Mysore Music Fest</td><td>EventHub</td><td>₹60L</td><td>₹60L</td><td>₹48L</td><td style="font-weight:700;color:var(--kg)">₹12L</td><td><span class="badge ba">Delayed</span></td><td><a class="al2">View</a></td></tr>
+            <tr><td style="font-weight:600">Mehta Birthday Gala</td><td>Mehta Family</td><td>₹8L</td><td>₹8L</td><td>₹6.8L</td><td style="font-weight:700;color:var(--kg)">₹1.2L</td><td><span class="badge bg">Active</span></td><td><a class="al2">View</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ③ PROJECTS -->
+<div class="sw" id="sw-proj">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/projects</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div>
+    <div class="ni"><span class="nic">⬡</span> Dashboard</div>
+    <div class="ni active"><span class="nic">📁</span> Projects <span class="nbadge">42</span></div>
+    <div class="ni"><span class="nic">₹</span> Finance</div>
+    <div class="ni"><span class="nic">🏪</span> Vendors</div>
+    <div class="nsl">Operations</div>
+    <div class="ni"><span class="nic">🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div>
+    <div class="ni"><span class="nic">📊</span> Reports</div>
+    <div class="ni"><span class="nic">⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div class="tb"><div><div class="tbt">Projects</div><div style="font-size:10px;color:var(--ks)">42 total · 28 active</div></div><div style="display:flex;gap:7px;align-items:center"><select class="fsel"><option>All Status</option><option>Active</option><option>Completed</option></select><select class="fsel"><option>All Types</option><option>Wedding</option><option>Corporate</option></select><button class="btn-r">+ Create Project</button></div></div>
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        <div style="background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden">
+          <div style="padding:14px;border-bottom:1px solid var(--kb);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kc)">Royal Wedding 2025</div><div style="font-size:10px;color:var(--ks);margin-top:2px">Sharma Family · Wedding</div><div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--kg);background:var(--kgl);padding:2px 7px;border-radius:9px;margin-top:5px;width:fit-content;font-weight:600">✓ Sheet Linked</div></div><span class="badge bg">Active</span></div>
+          <div style="padding:12px 14px"><div style="font-size:10px;color:var(--ks);margin-bottom:3px">Budget utilized</div><div class="pbar" style="margin-bottom:8px"><div class="pfill" style="width:76%"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Advance Recd</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹10L</div></div><div style="background:var(--kgl);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--kg)">Exp. Profit</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif;color:var(--kg)">₹6L</div></div></div></div>
+          <div style="padding:10px 14px;background:var(--km);display:flex;gap:7px;border-top:1px solid var(--kb)"><button class="btn-r" style="font-size:10px;padding:5px 10px">Open Dashboard</button><button class="btn-g" style="font-size:10px;padding:5px 10px">Open Sheet</button></div>
+        </div>
+        <div style="background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden">
+          <div style="padding:14px;border-bottom:1px solid var(--kb);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kc)">Tech Summit 2025</div><div style="font-size:10px;color:var(--ks);margin-top:2px">Infosys · Corporate</div><div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--kg);background:var(--kgl);padding:2px 7px;border-radius:9px;margin-top:5px;width:fit-content;font-weight:600">✓ Sheet Linked</div></div><span class="badge bb">Done</span></div>
+          <div style="padding:12px 14px"><div style="font-size:10px;color:var(--ks);margin-bottom:3px">Budget utilized</div><div class="pbar" style="margin-bottom:8px"><div class="pfill" style="width:100%;background:var(--kg)"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Advance Recd</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹18L</div></div><div style="background:var(--kgl);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--kg)">Actual Profit</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif;color:var(--kg)">₹12L</div></div></div></div>
+          <div style="padding:10px 14px;background:var(--km);display:flex;gap:7px;border-top:1px solid var(--kb)"><button class="btn-r" style="font-size:10px;padding:5px 10px">Open Dashboard</button><button class="btn-g" style="font-size:10px;padding:5px 10px">Open Sheet</button></div>
+        </div>
+        <div style="background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden">
+          <div style="padding:14px;border-bottom:1px solid var(--kb);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kc)">Mysore Music Festival</div><div style="font-size:10px;color:var(--ks);margin-top:2px">EventHub · Concert</div><div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--kg);background:var(--kgl);padding:2px 7px;border-radius:9px;margin-top:5px;width:fit-content;font-weight:600">✓ Sheet Linked</div></div><span class="badge ba">Delayed</span></div>
+          <div style="padding:12px 14px"><div style="font-size:10px;color:var(--ks);margin-bottom:3px">Budget utilized</div><div class="pbar" style="margin-bottom:8px"><div class="pfill" style="width:62%;background:var(--ka)"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Advance Recd</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹25L</div></div><div style="background:var(--kal);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ka)">Exp. Profit</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif;color:var(--ka)">₹12L</div></div></div></div>
+          <div style="padding:10px 14px;background:var(--km);display:flex;gap:7px;border-top:1px solid var(--kb)"><button class="btn-r" style="font-size:10px;padding:5px 10px">Open Dashboard</button><button class="btn-g" style="font-size:10px;padding:5px 10px">Open Sheet</button></div>
+        </div>
+        <div style="background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden">
+          <div style="padding:14px;border-bottom:1px solid var(--kb);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kc)">Mehta Birthday Gala</div><div style="font-size:10px;color:var(--ks);margin-top:2px">Mehta Family · Social</div><div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--kg);background:var(--kgl);padding:2px 7px;border-radius:9px;margin-top:5px;width:fit-content;font-weight:600">✓ Sheet Linked</div></div><span class="badge bg">Active</span></div>
+          <div style="padding:12px 14px"><div style="font-size:10px;color:var(--ks);margin-bottom:3px">Budget utilized</div><div class="pbar" style="margin-bottom:8px"><div class="pfill" style="width:45%"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Advance Recd</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹3L</div></div><div style="background:var(--kgl);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--kg)">Exp. Profit</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif;color:var(--kg)">₹1.2L</div></div></div></div>
+          <div style="padding:10px 14px;background:var(--km);display:flex;gap:7px;border-top:1px solid var(--kb)"><button class="btn-r" style="font-size:10px;padding:5px 10px">Open Dashboard</button><button class="btn-g" style="font-size:10px;padding:5px 10px">Open Sheet</button></div>
+        </div>
+        <div style="background:#fff;border-radius:11px;border:1px solid var(--kb);overflow:hidden">
+          <div style="padding:14px;border-bottom:1px solid var(--kb);display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kc)">Nair Silver Jubilee</div><div style="font-size:10px;color:var(--ks);margin-top:2px">Nair Family · Anniversary</div><div style="display:flex;align-items:center;gap:3px;font-size:9px;color:#AAA;background:#F0EDE8;padding:2px 7px;border-radius:9px;margin-top:5px;width:fit-content;font-weight:600">⚠ Sheet Pending</div></div><span class="badge ba">Planning</span></div>
+          <div style="padding:12px 14px"><div style="font-size:10px;color:var(--ks);margin-bottom:3px">Budget utilized</div><div class="pbar" style="margin-bottom:8px"><div class="pfill" style="width:15%;background:#B4B2A9"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Advance Recd</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹5L</div></div><div style="background:var(--km);border-radius:7px;padding:8px"><div style="font-size:9px;color:var(--ks)">Exp. Profit</div><div style="font-size:12px;font-weight:700;font-family:'Playfair Display',serif">₹2.1L</div></div></div></div>
+          <div style="padding:10px 14px;background:var(--km);display:flex;gap:7px;border-top:1px solid var(--kb)"><button class="btn-r" style="font-size:10px;padding:5px 10px">Open Dashboard</button><button class="btn-g" style="font-size:10px;padding:5px 10px">Link Sheet</button></div>
+        </div>
+        <div style="background:var(--km);border-radius:11px;border:1.5px dashed var(--kb);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;cursor:pointer"><div style="width:36px;height:36px;background:var(--krl);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--kr);margin-bottom:10px">+</div><div style="font-size:12px;font-weight:600;color:var(--kc)">Create New Project</div><div style="font-size:10px;color:var(--ks);margin-top:3px">Click to add a project</div></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ④ CREATE PROJECT -->
+<div class="sw" id="sw-create">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/projects/new</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div><div class="ni"><span>⬡</span> Dashboard</div><div class="ni active"><span>📁</span> Projects</div><div class="ni"><span>₹</span> Finance</div><div class="ni"><span>🏪</span> Vendors</div>
+    <div class="nsl">Operations</div><div class="ni"><span>🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div><div class="ni"><span>📊</span> Reports</div><div class="ni"><span>⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div class="tb"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:11px;color:var(--ks);cursor:pointer">← Projects</span><div class="tbt">Create New Project</div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px 22px">
+      <div style="background:#fff;border-radius:11px;padding:20px;border:1px solid var(--kb)">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--kc);margin-bottom:3px">Project Details</div>
+        <div style="font-size:11px;color:var(--ks);margin-bottom:20px">Fill in the event information</div>
+        <div class="fgrp"><label class="flbl">Project Name</label><input class="inp" value="Royal Wedding 2025" readonly></div>
+        <div class="frow"><div class="fgrp"><label class="flbl">Client Name</label><input class="inp" value="Sharma Family" readonly></div><div class="fgrp"><label class="flbl">Event Date</label><input class="inp" value="20 Dec 2025" readonly></div></div>
+        <div class="frow"><div class="fgrp"><label class="flbl">Event Type</label><select class="inp" style="cursor:pointer"><option selected>Wedding</option><option>Corporate</option><option>Social</option></select></div><div class="fgrp"><label class="flbl">Location</label><input class="inp" value="Mysore Palace Grounds" readonly></div></div>
+        <div class="fgrp"><label class="flbl">Google Sheet URL</label><div style="display:flex;gap:7px"><input class="inp" value="https://docs.google.com/spreadsheets/d/1Bxi..." readonly style="flex:1"><button style="background:var(--kc);color:#fff;border:none;border-radius:7px;padding:0 12px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">Validate ✓</button></div><div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--kg);font-weight:600;margin-top:6px"><span style="font-size:14px">✓</span> Sheet Connected — Quotation_Master_RoyalWedding.xlsx</div></div>
+      </div>
+      <div>
+        <div style="background:var(--kr);border-radius:11px;padding:20px;color:#fff">
+          <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#fff;margin-bottom:3px">Quotation Summary</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.65);margin-bottom:18px">Auto-extracted from Google Sheet</div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)"><div style="font-size:11px;color:rgba(255,255,255,.7)">Total Budget</div><div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#fff">₹25,00,000</div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)"><div style="font-size:11px;color:rgba(255,255,255,.7)">Revenue (Quoted)</div><div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#fff">₹25,00,000</div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.12)"><div style="font-size:11px;color:rgba(255,255,255,.7)">Vendor Cost</div><div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#fff">₹19,00,000</div></div>
+            <div style="padding:10px 0"><div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:3px">Expected Profit</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#fff">₹6,00,000</div><div style="display:inline-block;background:rgba(255,255,255,.15);border-radius:20px;padding:2px 9px;font-size:10px;color:rgba(255,255,255,.9);margin-top:4px">24% Margin · Excl. overheads</div></div>
+          </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)">
+            <div style="font-size:10px;color:rgba(255,255,255,.55);margin-bottom:7px">Vendors in Sheet</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+              <span class="stag">Avinash – Flower Decor</span><span class="stag">Dinku – Electrical</span><span class="stag">Abis – Setup</span><span class="stag">Catering Pro</span><span class="stag">SoundX</span>
+            </div>
+          </div>
+          <button style="width:100%;padding:12px;background:var(--kc);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:16px">Create Project →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ⑤ PROJECT DETAIL -->
+<div class="sw" id="sw-pd">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/projects/royal-wedding-2025</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div><div class="ni"><span>⬡</span> Dashboard</div><div class="ni active"><span>📁</span> Projects</div><div class="ni"><span>₹</span> Finance</div><div class="ni"><span>🏪</span> Vendors</div>
+    <div class="nsl">Operations</div><div class="ni"><span>🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div><div class="ni"><span>📊</span> Reports</div><div class="ni"><span>⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div style="background:#fff;padding:12px 22px;border-bottom:1px solid var(--kb);display:flex;align-items:center;justify-content:space-between">
+      <div><div style="font-size:10px;color:var(--ks);margin-bottom:3px;cursor:pointer">← All Projects</div><div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--kc)">Royal Wedding 2025</div><div style="font-size:10px;color:var(--ks)">Sharma Family · Mysore Palace Grounds · Dec 20, 2025</div></div>
+      <div style="display:flex;align-items:center;gap:7px"><span class="badge bg" style="font-size:11px;padding:4px 10px">Active</span><button class="btn-o" style="font-size:10px;padding:5px 10px">Open Sheet ↗</button><button class="btn-r">Add Payment</button></div>
+    </div>
+    <div class="cb">
+      <div class="kg4">
+        <div class="kcard"><div class="klbl">Total Budget</div><div class="kval">₹25,00,000</div></div>
+        <div class="kcard"><div class="klbl">Advance Received</div><div class="kval" style="color:var(--kg)">₹10,00,000</div><div class="ktrend"><span style="color:#AAA;font-size:9px">40% of budget</span></div></div>
+        <div class="kcard"><div class="klbl">Pending Customer</div><div class="kval" style="color:var(--ka)">₹15,00,000</div></div>
+        <div class="kcard acc"><div class="klbl">Expected Profit</div><div class="kval" style="font-size:17px">₹6,00,000</div><div style="margin-top:4px;font-size:10px;color:rgba(255,255,255,.75)">Current: ₹4.2L</div></div>
+      </div>
+      <div class="kg3" style="margin-top:-2px">
+        <div class="kcard"><div class="klbl">Vendor Advance Paid</div><div class="kval">₹5,00,000</div></div>
+        <div class="kcard"><div class="klbl">Total Vendor Payment</div><div class="kval">₹8,50,000</div></div>
+        <div class="kcard"><div class="klbl">Pending Vendor Pay</div><div class="kval" style="color:var(--kr)">₹10,50,000</div></div>
+      </div>
+      <div class="kc2">
+        <div>
+          <div class="cc" style="margin-bottom:12px">
+            <div class="ctit">Financial Progress</div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--ks)">Budget Utilized</span><span style="font-size:11px;font-weight:700;color:var(--kr)">76%</span></div><div class="pbar"><div class="pfill" style="width:76%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--ks)">Customer Payments</span><span style="font-size:11px;font-weight:700;color:var(--ka)">40%</span></div><div class="pbar"><div class="pfill" style="width:40%;background:var(--ka)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--ks)">Vendor Payments</span><span style="font-size:11px;font-weight:700;color:var(--kg)">81%</span></div><div class="pbar"><div class="pfill" style="width:81%;background:var(--kg)"></div></div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="th2"><div class="ttl">Vendor Payment Tracker</div><button class="btn-r" style="font-size:10px;padding:5px 9px">+ Add Vendor</button></div>
+            <table>
+              <thead><tr><th style="width:25%">Vendor</th><th style="width:22%">Category</th><th style="width:17%">Total</th><th style="width:17%">Paid</th><th style="width:19%">Balance</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:700">Avinash</td><td><span class="chip chip-r">Flower Decor</span></td><td>₹6L</td><td style="color:var(--kg);font-weight:600">₹3.5L</td><td style="color:var(--kr);font-weight:600">₹2.5L</td></tr>
+                <tr><td style="font-weight:700">Dinku</td><td><span class="chip chip-a">Electrical</span></td><td>₹3L</td><td style="color:var(--kg);font-weight:600">₹1.5L</td><td style="color:var(--kr);font-weight:600">₹1.5L</td></tr>
+                <tr><td style="font-weight:700">Abis</td><td><span class="chip chip-p">Setup</span></td><td>₹4L</td><td style="color:var(--kg);font-weight:600">₹2L</td><td style="color:var(--kr);font-weight:600">₹2L</td></tr>
+                <tr><td style="font-weight:700">Catering Pro</td><td><span class="chip" style="background:var(--kgoldl);color:var(--kgold)">Food & Bev</span></td><td>₹8L</td><td style="color:var(--kg);font-weight:600">₹5L</td><td style="color:var(--kr);font-weight:600">₹3L</td></tr>
+                <tr><td style="font-weight:700">SoundX</td><td><span class="chip chip-g">Audio/AV</span></td><td>₹5L</td><td style="color:var(--kg);font-weight:600">₹2L</td><td style="color:var(--kr);font-weight:600">₹3L</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="cc" style="margin-bottom:12px">
+            <div class="ctit">Customer Payment Timeline</div>
+            <div class="csub">Invoice schedule</div>
+            <ul class="tl">
+              <li class="tli"><div class="tld recv"></div><div style="flex:1"><div style="font-size:11px;font-weight:600">Invoice 1</div><div style="font-size:10px;color:var(--ks)">Received · Sep 5, 2025</div></div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kg)">₹10L</div></li>
+              <li class="tli"><div class="tld pend"></div><div style="flex:1"><div style="font-size:11px;font-weight:600">Invoice 2</div><div style="font-size:10px;color:var(--ks)">Pending · Dec 1, 2025</div></div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--ka)">₹5L</div></li>
+              <li class="tli"><div class="tld over"></div><div style="flex:1"><div style="font-size:11px;font-weight:600">Invoice 3</div><div style="font-size:10px;color:var(--ks)">Due post-event</div></div><div style="font-family:'Playfair Display',serif;font-size:13px;font-weight:600;color:var(--kr)">₹10L</div></li>
+            </ul>
+          </div>
+          <div class="cc">
+            <div class="ctit">Budget Breakdown</div>
+            <div class="csub">By vendor category</div>
+            <div style="height:130px;display:flex;align-items:center;justify-content:center"><canvas id="pd-donut" width="130" height="130"></canvas></div>
+            <div style="display:flex;flex-direction:column;gap:3px;margin-top:8px">
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--kr);border-radius:2px;display:inline-block"></span>Avinash – Flower Decor</span><span style="font-weight:600">23%</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--kgold);border-radius:2px;display:inline-block"></span>Food & Bev</span><span style="font-weight:600">31%</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--kp);border-radius:2px;display:inline-block"></span>Abis – Setup</span><span style="font-weight:600">15%</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--kg);border-radius:2px;display:inline-block"></span>SoundX – Audio</span><span style="font-weight:600">19%</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px"><span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:var(--ka);border-radius:2px;display:inline-block"></span>Dinku – Electrical</span><span style="font-weight:600">12%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ⑥ INTERNAL EXPENSES — NEW -->
+<div class="sw" id="sw-exp">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/internal-expenses</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div><div class="ni"><span>⬡</span> Dashboard</div><div class="ni"><span>📁</span> Projects</div><div class="ni"><span>₹</span> Finance</div><div class="ni"><span>🏪</span> Vendors</div>
+    <div class="nsl">Operations</div><div class="ni active"><span>🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div><div class="ni"><span>📊</span> Reports</div><div class="ni"><span>⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div class="tb"><div><div class="tbt">Internal Expenses</div><div style="font-size:10px;color:var(--ks)">Operational overheads · Reflected in all reports</div></div><div style="display:flex;gap:7px;align-items:center"><select class="fsel"><option>Jun 2025</option><option>May 2025</option><option>Q1 2025</option></select><select class="fsel"><option>All Categories</option><option>Rent</option><option>Transport</option><option>IT</option></select><button class="btn-r">+ Add Expense</button></div></div>
+    <div class="cb">
+      <div class="sum-banner">
+        <div class="sum-item"><div class="sum-lbl">Total This Month</div><div class="sum-val">₹3,20,000</div></div>
+        <div class="sum-sep"></div>
+        <div class="sum-item"><div class="sum-lbl">Rent</div><div class="sum-val">₹90,000</div></div>
+        <div class="sum-sep"></div>
+        <div class="sum-item"><div class="sum-lbl">Transport</div><div class="sum-val">₹55,000</div></div>
+        <div class="sum-sep"></div>
+        <div class="sum-item"><div class="sum-lbl">IT & Software</div><div class="sum-val">₹42,000</div></div>
+        <div class="sum-sep"></div>
+        <div class="sum-item"><div class="sum-lbl">Salaries</div><div class="sum-val">₹1,05,000</div></div>
+        <div class="sum-sep"></div>
+        <div class="sum-item"><div class="sum-lbl">Miscellaneous</div><div class="sum-val">₹28,000</div></div>
+      </div>
+      <div class="kg2" style="margin-bottom:14px">
+        <div class="cc">
+          <div class="ctit">Add New Internal Expense</div>
+          <div class="csub">This will be included in monthly overhead reports</div>
+          <div class="frow"><div class="fgrp"><label class="flbl">Category</label><select class="inp" style="cursor:pointer"><option>Rent / Office</option><option>Transport</option><option>IT & Software</option><option>Salaries</option><option>Utilities</option><option>Marketing</option><option>Miscellaneous</option></select></div><div class="fgrp"><label class="flbl">Sub-category</label><input class="inp" placeholder="e.g. Office Rent – Saraswati Rd" value="Office Rent – Saraswati Road"></div></div>
+          <div class="frow"><div class="fgrp"><label class="flbl">Amount (₹)</label><input class="inp" value="45,000" type="text"></div><div class="fgrp"><label class="flbl">Date</label><input class="inp" type="text" value="03 Jun 2025"></div></div>
+          <div class="fgrp"><label class="flbl">Paid To / Reference</label><input class="inp" value="Landlord – Chandra Properties, Mysore"></div>
+          <div class="frow"><div class="fgrp"><label class="flbl">Payment Mode</label><select class="inp" style="cursor:pointer"><option>Bank Transfer</option><option>Cash</option><option>UPI</option><option>Cheque</option></select></div><div class="fgrp"><label class="flbl">Receipt / Invoice #</label><input class="inp" value="RCP-2025-0048"></div></div>
+          <div class="fgrp"><label class="flbl">Notes</label><input class="inp" placeholder="Optional notes…" value="Monthly office rent for Jun 2025"></div>
+          <div style="display:flex;gap:8px;margin-top:6px"><button class="btn-r" style="flex:1;justify-content:center;padding:11px">Save Expense</button><button class="btn-g" style="padding:10px 16px">Clear</button></div>
+        </div>
+        <div>
+          <div class="cc" style="margin-bottom:12px">
+            <div class="ctit">Overhead by Category</div>
+            <div class="csub">Jun 2025 · ₹3,20,000 total</div>
+            <div style="height:140px"><canvas id="exp-bar"></canvas></div>
+          </div>
+          <div class="cc">
+            <div class="ctit">Overhead vs Gross Profit</div>
+            <div class="csub">Impact on net margin</div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:7px 10px;background:var(--kgl);border-radius:7px"><span style="color:var(--kg);font-weight:600">Gross Profit</span><span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--kg)">₹27,80,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:7px 10px;background:var(--krl);border-radius:7px"><span style="color:var(--krd);font-weight:600">– Internal Overheads</span><span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--krd)">₹3,20,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:9px 10px;background:var(--kc);border-radius:7px"><span style="color:#fff;font-weight:700">Net Profit</span><span style="font-family:'Playfair Display',serif;font-weight:700;color:#fff">₹24,60,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 10px;background:var(--km);border-radius:7px;border:1px solid var(--kb)"><span style="color:var(--ks)">Net Margin</span><span style="font-family:'Playfair Display',serif;font-weight:700;color:var(--kc)">19.8%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="th2"><div class="ttl">Recent Internal Expenses</div><div style="display:flex;gap:6px"><button class="btn-g" style="font-size:10px;padding:5px 9px">⬇ Export PDF</button><button class="btn-g" style="font-size:10px;padding:5px 9px">⬇ Excel</button></div></div>
+        <table>
+          <thead><tr><th style="width:10%">Date</th><th style="width:18%">Category</th><th style="width:24%">Description</th><th style="width:16%">Paid To</th><th style="width:10%">Mode</th><th style="width:12%">Amount</th><th style="width:10%">Status</th></tr></thead>
+          <tbody>
+            <tr><td>03 Jun 2025</td><td><span class="chip chip-p">Rent / Office</span></td><td>Office Rent – Saraswati Road</td><td>Chandra Properties</td><td>Transfer</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹45,000</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>02 Jun 2025</td><td><span class="chip chip-a">Transport</span></td><td>Site visit fuel + cab – Royal Wedding</td><td>Ola Business</td><td>UPI</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹8,200</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>01 Jun 2025</td><td><span class="chip chip-r">IT & Software</span></td><td>Google Workspace subscription</td><td>Google India</td><td>Card</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹12,500</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>01 Jun 2025</td><td><span class="chip" style="background:var(--kpul);color:var(--kpu)">Salaries</span></td><td>Coordinator salary – June</td><td>Ravi Kumar</td><td>Transfer</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹35,000</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>31 May 2025</td><td><span class="chip chip-a">Transport</span></td><td>Tempo hire – stage equipment</td><td>Mysore Logistics</td><td>Cash</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹14,000</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>30 May 2025</td><td><span class="chip chip-g" style="background:var(--kgoldl);color:var(--kgold)">Utilities</span></td><td>Electricity – office + storage</td><td>BESCOM Mysore</td><td>UPI</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹6,800</td><td><span class="badge bg">Paid</span></td></tr>
+            <tr><td>29 May 2025</td><td><span class="chip chip-p">IT & Software</span></td><td>Adobe CC license renewal</td><td>Adobe Systems</td><td>Card</td><td style="font-weight:700;font-family:'Playfair Display',serif">₹9,500</td><td><span class="badge ba">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- ⑦ REPORTS (updated with OH) -->
+<div class="sw" id="sw-rep">
+<div class="bc"><div class="bd"><div class="bdot r"></div><div class="bdot y"></div><div class="bdot g"></div></div><div class="burl">app.kriyaevents.com/reports</div></div>
+<div class="af"><div class="ml">
+  <div class="sb">
+    <div class="sblogo"><div class="sblm"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L9 5.5H14L10 8.5L12 13L7 10L2 13L4 8.5L0 5.5H5L7 1Z" fill="white" opacity=".9"/></svg></div><div class="sblt">Kriya</div></div>
+    <div class="sbsub">Event Finance Tracker</div>
+    <div class="nsl">Main</div><div class="ni"><span>⬡</span> Dashboard</div><div class="ni"><span>📁</span> Projects</div><div class="ni"><span>₹</span> Finance</div><div class="ni"><span>🏪</span> Vendors</div>
+    <div class="nsl">Operations</div><div class="ni"><span>🏢</span> Internal Expenses <span class="nbadge orange">New</span></div>
+    <div class="nsl">Insights</div><div class="ni active"><span>📊</span> Reports</div><div class="ni"><span>⚙</span> Settings</div>
+    <div class="sbft"><div class="ua"><div class="uav">KF</div><div><p style="font-size:11px;font-weight:600;color:#fff;margin:0">Kriya Finance</p><span style="font-size:9px;color:rgba(255,255,255,.4)">Admin</span></div></div></div>
+  </div>
+  <div class="mc">
+    <div class="tb"><div><div class="tbt">Reports & Analytics</div><div style="font-size:10px;color:var(--ks)">Includes internal overheads in all figures</div></div><div style="display:flex;gap:7px;align-items:center"><div class="fi"><select class="fsel"><option>Jan–Jun 2025</option></select><select class="fsel"><option>All Types</option></select><select class="fsel"><option>All Clients</option></select></div><div style="display:flex;gap:6px"><button class="btn-g" style="font-size:11px;display:flex;align-items:center;gap:4px">⬇ PDF</button><button class="btn-g" style="font-size:11px;display:flex;align-items:center;gap:4px">⬇ Excel</button></div></div></div>
+    <div class="cb">
+      <div class="kg4" style="margin-bottom:12px">
+        <div class="kcard"><div class="klbl">Total Revenue</div><div class="kval">₹1,24,50,000</div><div class="ktrend"><span class="tu">↑ 18.4%</span></div></div>
+        <div class="kcard warn"><div class="klbl">Internal Overheads</div><div class="kval">₹3,20,000</div><div class="ktrend"><span style="color:var(--ka);font-size:9px">4 categories</span></div></div>
+        <div class="kcard acc2"><div class="klbl">Net Profit (after OH)</div><div class="kval">₹24,60,000</div><div class="ktrend" style="margin-top:4px"><span style="color:rgba(255,255,255,.65);font-size:9px">Gross was ₹27.8L</span></div></div>
+        <div class="kcard acc"><div class="klbl">Net Margin (after OH)</div><div class="kval" style="font-size:22px">19.8%</div><div class="ktrend" style="margin-top:3px"><span style="color:rgba(255,255,255,.75);font-size:9px">Gross: 22.3%</span></div></div>
+      </div>
+      <div class="kg2" style="margin-bottom:12px">
+        <div class="cc">
+          <div class="ctit">Revenue, Gross Profit & Net Profit</div>
+          <div class="csub">Monthly · Jan–May 2025 · After overheads</div>
+          <div style="height:160px"><canvas id="rep-rev"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="ctit">Expense Breakdown</div>
+          <div class="csub">Vendor costs + Internal overheads</div>
+          <div style="height:160px"><canvas id="rep-exp"></canvas></div>
+        </div>
+      </div>
+      <div class="kg2">
+        <div class="cc">
+          <div class="ctit">Vendor Spend – All Projects</div>
+          <div class="csub">Avinash · Dinku · Abis + others</div>
+          <div style="height:140px"><canvas id="rep-vend"></canvas></div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid var(--kb)"><span style="font-weight:600">Avinash – Flower Decor</span><span style="font-family:'Playfair Display',serif;font-weight:700">₹14.2L</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid var(--kb)"><span style="font-weight:600">Dinku – Electrical</span><span style="font-family:'Playfair Display',serif;font-weight:700">₹8.6L</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;padding:4px 0;border-bottom:1px solid var(--kb)"><span style="font-weight:600">Abis – Setup</span><span style="font-family:'Playfair Display',serif;font-weight:700">₹11.8L</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;padding:4px 0"><span>Others (Catering, AV, etc.)</span><span style="font-family:'Playfair Display',serif;font-weight:700">₹48.1L</span></div>
+          </div>
+        </div>
+        <div class="cc">
+          <div class="ctit">Top Clients by Revenue</div>
+          <div class="csub">FY 2024–25</div>
+          <ul style="list-style:none;padding:0">
+            <li style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--kb)"><div style="width:19px;height:19px;border-radius:50%;background:var(--krl);color:var(--krd);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div><div style="flex:1"><div style="font-size:11px;font-weight:600">EventHub Mysore</div><div style="background:#F0EDE8;border-radius:3px;height:5px;margin-top:4px"><div style="background:var(--kr);border-radius:3px;height:5px;width:100%"></div></div></div><div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;min-width:40px;text-align:right">₹60L</div></li>
+            <li style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--kb)"><div style="width:19px;height:19px;border-radius:50%;background:var(--krl);color:var(--krd);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div><div style="flex:1"><div style="font-size:11px;font-weight:600">Infosys</div><div style="background:#F0EDE8;border-radius:3px;height:5px;margin-top:4px"><div style="background:var(--kr);border-radius:3px;height:5px;width:67%"></div></div></div><div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;min-width:40px;text-align:right">₹40L</div></li>
+            <li style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--kb)"><div style="width:19px;height:19px;border-radius:50%;background:var(--krl);color:var(--krd);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div><div style="flex:1"><div style="font-size:11px;font-weight:600">Sharma Family</div><div style="background:#F0EDE8;border-radius:3px;height:5px;margin-top:4px"><div style="background:var(--kr);border-radius:3px;height:5px;width:42%"></div></div></div><div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;min-width:40px;text-align:right">₹25L</div></li>
+            <li style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--kb)"><div style="width:19px;height:19px;border-radius:50%;background:var(--krl);color:var(--krd);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div><div style="flex:1"><div style="font-size:11px;font-weight:600">Nair Family</div><div style="background:#F0EDE8;border-radius:3px;height:5px;margin-top:4px"><div style="background:var(--kr);border-radius:3px;height:5px;width:20%"></div></div></div><div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;min-width:40px;text-align:right">₹12L</div></li>
+            <li style="display:flex;align-items:center;gap:9px;padding:8px 0"><div style="width:19px;height:19px;border-radius:50%;background:var(--krl);color:var(--krd);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div><div style="flex:1"><div style="font-size:11px;font-weight:600">Mehta Family</div><div style="background:#F0EDE8;border-radius:3px;height:5px;margin-top:4px"><div style="background:var(--kr);border-radius:3px;height:5px;width:13%"></div></div></div><div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;min-width:40px;text-align:right">₹8L</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<script>
+const KR='#BE1E2D',KG='#0F6E56',KA='#BA7517',KP='#4A90D9',KC='#1A1A2E',KGO='#C9A84C',KPU='#534AB7';
+const charts={};
+function ss(id,btn){
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sw-'+id).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(()=>initC(id),120);
+}
+const defs={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:9}}},scales:{y:{ticks:{font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{size:9}},grid:{display:false}}}};
+function initC(s){
+  if(s==='dash'){
+    if(!charts.dl){const c=document.getElementById('dc-line');if(c){charts.dl=new Chart(c,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May'],datasets:[{label:'Revenue',data:[8,12,10,15,18],borderColor:KR,backgroundColor:'rgba(190,30,45,.07)',tension:.4,fill:true,pointBackgroundColor:KR,pointRadius:3},{label:'Expenses+OH',data:[6.5,9.4,8.3,11.6,14.5],borderColor:KC,backgroundColor:'rgba(26,26,46,.04)',tension:.4,fill:true,pointBackgroundColor:KC,pointRadius:3},{label:'Net Profit',data:[1.5,2.6,1.7,3.4,3.5],borderColor:KG,tension:.4,pointBackgroundColor:KG,pointRadius:3}]},options:{...defs,scales:{y:{ticks:{font:{size:9},callback:v=>'₹'+v+'L'},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}});}}
+    if(!charts.dd){const c=document.getElementById('dc-donut');if(c){charts.dd=new Chart(c,{type:'doughnut',data:{labels:['Received','Pending','Overdue'],datasets:[{data:[65,25,10],backgroundColor:[KR,KA,'#B4B2A9'],borderWidth:0}]},options:{responsive:false,plugins:{legend:{display:false}},cutout:'65%'}});}}
+  }
+  if(s==='pd'){
+    if(!charts.pd){const c=document.getElementById('pd-donut');if(c){charts.pd=new Chart(c,{type:'doughnut',data:{labels:['Avinash','Food','Abis','SoundX','Dinku'],datasets:[{data:[23,31,15,19,12],backgroundColor:[KR,KGO,KP,KG,KA],borderWidth:0}]},options:{responsive:false,plugins:{legend:{display:false}},cutout:'60%'}});}}
+  }
+  if(s==='exp'){
+    if(!charts.eb){const c=document.getElementById('exp-bar');if(c){charts.eb=new Chart(c,{type:'bar',data:{labels:['Rent','Transport','IT','Salaries','Utilities','Misc'],datasets:[{label:'Amount',data:[90,55,42,105,20,28],backgroundColor:[KP,KA,KR,KPU,KG,KC+'99'],borderRadius:5}]},options:{...defs,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:9},callback:v=>'₹'+v+'K'},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}});}}
+  }
+  if(s==='rep'){
+    if(!charts.rr){const c=document.getElementById('rep-rev');if(c){charts.rr=new Chart(c,{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May'],datasets:[{label:'Revenue',data:[8,12,10,15,18],backgroundColor:KR+'BB',borderRadius:5},{label:'Gross Profit',data:[1.5,2.8,2.1,3.5,4.2],backgroundColor:KG+'BB',borderRadius:5},{label:'Net Profit',data:[1.2,2.4,1.8,3.0,3.7],backgroundColor:KC+'BB',borderRadius:5}]},options:{...defs,scales:{y:{ticks:{font:{size:9},callback:v=>'₹'+v+'L'},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}});}}
+    if(!charts.re){const c=document.getElementById('rep-exp');if(c){charts.re=new Chart(c,{type:'doughnut',data:{labels:['Vendor: Avinash','Vendor: Abis','Vendor: Dinku','Other Vendors','Rent','Transport','IT & SW','Salaries'],datasets:[{data:[14.2,11.8,8.6,48.1,5.4,3.3,2.5,6.3],backgroundColor:[KR,KP,KA,KC+'BB',KGO,KG,KPU,'#888'],borderWidth:1,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:9},boxWidth:9}}},cutout:'40%'}});}}
+    if(!charts.rv){const c=document.getElementById('rep-vend');if(c){charts.rv=new Chart(c,{type:'bar',data:{labels:['Avinash','Abis','Dinku','Catering','SoundX','Others'],datasets:[{label:'Total Paid (₹L)',data:[14.2,11.8,8.6,24.5,12.8,10.8],backgroundColor:[KR,KP,KA,KGO,KG,KC+'AA'],borderRadius:5}]},options:{...defs,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:9},callback:v=>'₹'+v+'L'},grid:{color:'rgba(0,0,0,.04)'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}});}}
+  }
+}
+setTimeout(()=>initC('dash'),300);
+</script>
